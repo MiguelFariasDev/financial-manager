@@ -45,7 +45,7 @@ class _AddSheetState extends State<_AddSheet> {
       cat: kind == 'Receita' ? 'Receita' : cat,
       icon: kind == 'Receita' ? 'arrow-down-left' : catIcon(cat),
       amt: kind == 'Despesa' ? -(instOn ? per : amtNum) : amtNum,
-      m: method, acc: acc, day: 'Hoje', st: 'paga',
+      m: method, acc: acc, day: 'Hoje', st: 'paga', date: kToday,
       nov: !(instOn && startOff == 1),
       card: instOn ? cardId : null,
     );

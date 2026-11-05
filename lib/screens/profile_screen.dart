@@ -6,6 +6,7 @@ import '../nav.dart';
 import '../sheets/import_sheet.dart';
 import '../theme/tokens.dart';
 import '../util/export.dart';
+import '../util/format.dart';
 import '../widgets/common.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -20,11 +21,6 @@ class ProfileScreen extends StatelessWidget {
       ('Nubank', 'Conta ••7714', 'R\$ 6.120,35', 'bank'),
       ('Carteira', 'Dinheiro', 'R\$ 0,00', 'wallet'),
     ];
-    const history = [
-      ('extrato_itau_outubro.ofx', '3 nov · 42 importadas', 'file-text'),
-      ('nubank_conta_2026-09.csv', '4 out · 37 importadas', 'file-csv'),
-    ];
-
     return SingleChildScrollView(
       padding: EdgeInsets.fromLTRB(22, 14, 22, bottomPad),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -144,16 +140,21 @@ class ProfileScreen extends StatelessWidget {
           TextLink('Importar extrato', () => showImportSheet(context)),
         ]),
         const SizedBox(height: 2),
-        for (final (name, sub, icon) in history)
+        if (a.batches.isEmpty)
+          Padding(padding: const EdgeInsets.only(top: 8), child: T('Nenhuma importação ainda.', 14, italic: true, color: c.tx2)),
+        for (final b in a.batches)
           ConstrainedBox(
             constraints: const BoxConstraints(minHeight: 44),
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 10),
               child: Row(children: [
-                Ph(icon, size: 24, color: c.acInk),
+                Ph(b.name.toLowerCase().endsWith('.csv') ? 'file-csv' : 'file-text', size: 24, color: c.acInk),
                 const SizedBox(width: 12),
-                Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [T(name, 15, bold: true, maxLines: 1), T(sub, 13, color: c.tx2)])),
-                Tap(onTap: () => a.showToast('Importação desfeita · $name'), child: SizedBox(height: 44, child: Center(child: T('Desfazer', 14, color: c.mInk)))),
+                Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  T(b.name, 15, bold: true, maxLines: 1),
+                  T('${b.at.day} ${mAbbr(b.at.month - 1).toLowerCase()} · ${b.count} importadas', 13, color: c.tx2),
+                ])),
+                Tap(onTap: () => a.undoImport(b.id), child: SizedBox(height: 44, child: Center(child: T('Desfazer', 14, color: c.mInk)))),
               ]),
             ),
           ),

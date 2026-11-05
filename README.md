@@ -31,10 +31,19 @@ lib/
   sheets/    bottom sheets (cadastro, importação, pagamento, edição)
 ```
 
+## Importação de extratos (OFX / CSV)
+Botão de importar em Movimentações (ou no Perfil) → escolher arquivo → **prévia** (a importar / já existiam / para revisar) → confirmar. Nada é gravado antes da confirmação.
+
+- **OFX** 1.x (SGML) e 2.x (XML), incluindo arquivos em Latin-1/Windows-1252; conta corrente e cartão.
+- **CSV** com separador `,` `;` ou tab, cabeçalho detectado (mesmo com linhas antes dele), datas `dd/mm/aaaa`, `aaaa-mm-dd` e `dd/mm/aa`, valores como `1.234,56`, `-12.30`, `(12,30)`, colunas de débito/crédito. Exportações de cartão do Nubank (valores positivos = compra) são reconhecidas.
+- **Duplicatas:** linhas com o mesmo identificador (FITID) já importado são ignoradas; sem identificador, uma movimentação existente com o mesmo dia e valor absorve uma linha do arquivo (lançamentos manuais raramente têm a mesma descrição do banco). Reimportar o mesmo arquivo não duplica nada.
+- **Categorias:** usa a coluna de categoria do CSV ou palavras-chave na descrição. O que não casa vira "Outros" com a marca **Sem categoria**; toque na movimentação para escolher.
+- **Desfazer:** cada importação é um lote e pode ser desfeita inteira no Perfil.
+- **Limites:** arquivos de até 10 MB; planilhas Excel e PDF são recusados com mensagem. Movimentações de meses/anos diferentes aparecem ao navegar pelo mês em Movimentações; só as de novembro/2026 entram nas contas do Início.
+- **Cartões:** extratos de cartão entram como movimentações de crédito, mas ainda **não alimentam as faturas** dos cartões cadastrados.
+
 ## O que ainda é demonstração (não é dado real)
-- **Dados de exemplo:** contas, cartões, movimentações, saldo em contas, histórico de importações e a data de referência (**4 de novembro de 2026**, em `lib/data/seed.dart`) vêm do protótipo. O que o usuário faz no app (lançamentos, pagamentos de fatura, meta, limites, renomear parcelas, tema) é persistido.
-- **Importação:** o fluxo (carregamento, erro de `.xlsx`, resumo) é o do protótipo, mas **não lê arquivos nem importa nada ainda**. Falta seletor de arquivos e parsers OFX/CSV.
-- **"Desfazer" importação:** só mostra o aviso.
+- **Dados de exemplo:** contas, cartões, movimentações, saldo em contas e a data de referência (**4 de novembro de 2026**, em `lib/data/seed.dart`) vêm do protótipo. O que o usuário faz no app (lançamentos, pagamentos de fatura, meta, limites, renomear parcelas, tema) é persistido.
 - **Exportar CSV/backup:** copia o conteúdo para a área de transferência (o protótipo só mostrava um aviso). Falta gravar arquivo/compartilhar.
 - **Pagamento de fatura:** marca a fatura como paga, mas não lança a saída na conta escolhida.
 

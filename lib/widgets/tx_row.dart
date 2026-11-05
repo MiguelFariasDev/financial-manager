@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../data/models.dart';
 import '../nav.dart';
+import '../sheets/category_sheet.dart';
 import '../theme/tokens.dart';
 import '../util/format.dart';
 import 'common.dart';
@@ -14,7 +15,7 @@ class TxRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = context.c;
     final fut = t.st == 'futura', pend = t.st == 'pendente';
-    final pill = fut ? 'Agendada ${t.due}' : pend ? 'A confirmar' : '';
+    final pill = fut ? 'Agendada ${t.due}' : pend ? 'A confirmar' : t.review ? 'Sem categoria' : '';
     final row = Opacity(
       opacity: fut ? .62 : 1,
       child: ConstrainedBox(
@@ -42,6 +43,9 @@ class TxRow extends StatelessWidget {
         ),
       ),
     );
-    return Tap(onTap: t.card == null ? null : () => openCard(context, t.card!), child: row);
+    return Tap(
+      onTap: t.review ? () => showCategorySheet(context, t) : t.card == null ? null : () => openCard(context, t.card!),
+      child: row,
+    );
   }
 }

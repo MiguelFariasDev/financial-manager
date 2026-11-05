@@ -24,6 +24,9 @@ String money(double v, {bool sign = false, bool symbol = true}) {
 /// Short month label, e.g. index 10 -> "nov/26" (index may exceed 11).
 String mshort(int m) => '${monthNames[m % 12].substring(0, 3).toLowerCase()}/${26 + m ~/ 12}';
 
+/// "Novembro 2026" for an absolute month index (0 = janeiro/2026; negative = earlier years).
+String monthTitle(int m) => '${monthNames[m % 12]} ${2026 + (m / 12).floor()}';
+
 String mAbbr(int m) => monthNames[m % 12].substring(0, 3);
 
 String oneDecimalPt(double v) => v.toStringAsFixed(1).replaceAll('.', ',');

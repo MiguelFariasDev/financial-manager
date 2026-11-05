@@ -7,6 +7,9 @@ const kTodayDay = 4;
 const kDaysInMonth = 30;
 const kMonthIndex = 10; // novembro
 const kUserName = 'Marina';
+final kToday = DateTime(2026, 11, 4);
+/// Moment recorded on import batches.
+DateTime get kNow => DateTime.now();
 
 const cats = [
   Cat('Alimentação', 'fork-knife'), Cat('Transporte', 'car-profile'), Cat('Moradia', 'house-line'),
@@ -17,17 +20,17 @@ const cats = [
 String catIcon(String k) => cats.firstWhere((c) => c.k == k, orElse: () => const Cat('', 'receipt')).icon;
 
 final seedTxs = <Tx>[
-  Tx(id: 10, d: 'Condomínio', cat: 'Moradia', icon: 'buildings', amt: -680, m: 'PIX', acc: 'Itaú conta', day: 'Agendadas', st: 'futura', due: '15 nov'),
-  Tx(id: 11, d: 'Internet Vivo', cat: 'Moradia', icon: 'wifi-high', amt: -129.9, m: 'Débito', acc: 'Itaú conta', day: 'Agendadas', st: 'futura', due: '18 nov'),
-  Tx(id: 1, d: 'Pão de Açúcar', cat: 'Alimentação', icon: 'basket', amt: -186.4, m: 'Crédito', acc: 'Nubank ••4821', day: 'Hoje', st: 'paga'),
-  Tx(id: 2, d: 'Uber', cat: 'Transporte', icon: 'car-profile', amt: -32.9, m: 'Crédito', acc: 'Nubank ••4821', day: 'Hoje', st: 'paga'),
-  Tx(id: 3, d: 'Salário · Acme Ltda', cat: 'Receita', icon: 'briefcase', amt: 12500, m: 'PIX', acc: 'Itaú conta', day: 'Ontem, 3 nov', st: 'paga'),
-  Tx(id: 4, d: 'Aluguel', cat: 'Moradia', icon: 'house-line', amt: -2150, m: 'PIX', acc: 'Itaú conta', day: 'Ontem, 3 nov', st: 'paga'),
-  Tx(id: 5, d: 'Drogasil', cat: 'Saúde', icon: 'first-aid-kit', amt: -84.7, m: 'Débito', acc: 'Itaú conta', day: 'Seg, 2 nov', st: 'paga'),
-  Tx(id: 6, d: 'Feira livre', cat: 'Alimentação', icon: 'carrot', amt: -48, m: 'Dinheiro', acc: 'Carteira', day: 'Seg, 2 nov', st: 'paga'),
-  Tx(id: 7, d: 'Freela · identidade visual', cat: 'Receita', icon: 'pen-nib', amt: 1800, m: 'PIX', acc: 'Nubank conta', day: 'Dom, 1 nov', st: 'pendente'),
-  Tx(id: 8, d: 'iPhone 16 Pro · 3/10', cat: 'Compras', icon: 'device-mobile', amt: -649.9, m: 'Crédito', acc: 'Nubank ••4821', day: 'Dom, 1 nov', st: 'paga', card: 'nu'),
-  Tx(id: 9, d: 'Cinema', cat: 'Lazer', icon: 'film-strip', amt: -64, m: 'Crédito', acc: 'Itaú ••0937', day: 'Dom, 1 nov', st: 'paga'),
+  Tx(id: 10, d: 'Condomínio', cat: 'Moradia', icon: 'buildings', amt: -680, m: 'PIX', acc: 'Itaú conta', day: 'Agendadas', st: 'futura', due: '15 nov', date: DateTime(2026, 11, 15)),
+  Tx(id: 11, d: 'Internet Vivo', cat: 'Moradia', icon: 'wifi-high', amt: -129.9, m: 'Débito', acc: 'Itaú conta', day: 'Agendadas', st: 'futura', due: '18 nov', date: DateTime(2026, 11, 18)),
+  Tx(id: 1, d: 'Pão de Açúcar', cat: 'Alimentação', icon: 'basket', amt: -186.4, m: 'Crédito', acc: 'Nubank ••4821', day: 'Hoje', st: 'paga', date: DateTime(2026, 11, 4)),
+  Tx(id: 2, d: 'Uber', cat: 'Transporte', icon: 'car-profile', amt: -32.9, m: 'Crédito', acc: 'Nubank ••4821', day: 'Hoje', st: 'paga', date: DateTime(2026, 11, 4)),
+  Tx(id: 3, d: 'Salário · Acme Ltda', cat: 'Receita', icon: 'briefcase', amt: 12500, m: 'PIX', acc: 'Itaú conta', day: 'Ontem, 3 nov', st: 'paga', date: DateTime(2026, 11, 3)),
+  Tx(id: 4, d: 'Aluguel', cat: 'Moradia', icon: 'house-line', amt: -2150, m: 'PIX', acc: 'Itaú conta', day: 'Ontem, 3 nov', st: 'paga', date: DateTime(2026, 11, 3)),
+  Tx(id: 5, d: 'Drogasil', cat: 'Saúde', icon: 'first-aid-kit', amt: -84.7, m: 'Débito', acc: 'Itaú conta', day: 'Seg, 2 nov', st: 'paga', date: DateTime(2026, 11, 2)),
+  Tx(id: 6, d: 'Feira livre', cat: 'Alimentação', icon: 'carrot', amt: -48, m: 'Dinheiro', acc: 'Carteira', day: 'Seg, 2 nov', st: 'paga', date: DateTime(2026, 11, 2)),
+  Tx(id: 7, d: 'Freela · identidade visual', cat: 'Receita', icon: 'pen-nib', amt: 1800, m: 'PIX', acc: 'Nubank conta', day: 'Dom, 1 nov', st: 'pendente', date: DateTime(2026, 11, 1)),
+  Tx(id: 8, d: 'iPhone 16 Pro · 3/10', cat: 'Compras', icon: 'device-mobile', amt: -649.9, m: 'Crédito', acc: 'Nubank ••4821', day: 'Dom, 1 nov', st: 'paga', date: DateTime(2026, 11, 1), card: 'nu'),
+  Tx(id: 9, d: 'Cinema', cat: 'Lazer', icon: 'film-strip', amt: -64, m: 'Crédito', acc: 'Itaú ••0937', day: 'Dom, 1 nov', st: 'paga', date: DateTime(2026, 11, 1)),
 ];
 
 const dayOrder = ['Agendadas', 'Hoje', 'Ontem, 3 nov', 'Seg, 2 nov', 'Dom, 1 nov'];

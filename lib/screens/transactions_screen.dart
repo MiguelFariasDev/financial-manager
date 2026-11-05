@@ -26,7 +26,8 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
   @override
   Widget build(BuildContext context) {
     final a = context.app, c = context.c;
-    var list = month == kMonthIndex ? a.allTxs : <Tx>[];
+    final monthTxs = a.allTxs.where((t) => t.monthIdx == month).toList();
+    var list = monthTxs;
     list = list.where((t) => filter == 'Todas' || (filter == 'Receitas' && t.amt > 0) || (filter == 'Despesas' && t.amt < 0) || t.m == filter).toList();
     if (cat != 'Todas') list = list.where((t) => t.cat == cat).toList();
     final query = q.trim().toLowerCase();
@@ -34,7 +35,8 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
 
     final groups = <String, List<Tx>>{};
     for (final t in list) { groups.putIfAbsent(t.day, () => []).add(t); }
-    final labels = groups.keys.toList()..sort((x, y) => dayOrder.indexOf(x).compareTo(dayOrder.indexOf(y)));
+    final labels = groups.keys.toList(); // allTxs is already newest-first
+    groups['Agendadas']?.sort((x, y) => x.date.compareTo(y.date));
     final done = list.where((t) => t.st != 'futura');
     final inSum = done.where((t) => t.amt > 0).fold(0.0, (s, t) => s + t.amt);
     final outSum = done.where((t) => t.amt < 0).fold(0.0, (s, t) => s - t.amt);
@@ -68,8 +70,8 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
         ),
         const SizedBox(height: 14),
         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          Transform.translate(offset: const Offset(-12, 0), child: IconBox('caret-left', () => setState(() => month = month > 0 ? month - 1 : 0), bg: false, size: 18, label: 'Mês anterior')),
-          T('${monthNames[month]} 2026', 17, bold: true),
+          Transform.translate(offset: const Offset(-12, 0), child: IconBox('caret-left', () => setState(() => month = month > -60 ? month - 1 : month), bg: false, size: 18, label: 'Mês anterior')),
+          T(monthTitle(month), 17, bold: true),
           Transform.translate(offset: const Offset(12, 0), child: IconBox('caret-right', () => setState(() => month = month < 11 ? month + 1 : 11), bg: false, size: 18, label: 'Próximo mês')),
         ]),
         const SizedBox(height: 4),
@@ -122,13 +124,13 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
           ],
         ] else
           _Empty(
-            icon: month != kMonthIndex ? 'tray' : 'magnifying-glass',
-            title: month != kMonthIndex ? 'Nada em ${monthNames[month].toLowerCase()}.' : 'Nenhum resultado.',
-            body: month != kMonthIndex
+            icon: monthTxs.isEmpty ? 'tray' : 'magnifying-glass',
+            title: monthTxs.isEmpty ? 'Nada em ${monthNames[month % 12].toLowerCase()}.' : 'Nenhum resultado.',
+            body: monthTxs.isEmpty
                 ? 'Ainda não há movimentações neste mês. Importe o extrato do banco para preencher de uma vez.'
                 : 'Nenhuma movimentação corresponde aos filtros escolhidos.',
-            cta: month != kMonthIndex ? 'Importar extrato' : 'Limpar filtros',
-            onTap: month != kMonthIndex ? () => showImportSheet(context) : () => setState(() { filter = 'Todas'; cat = 'Todas'; q = ''; }),
+            cta: monthTxs.isEmpty ? 'Importar extrato' : 'Limpar filtros',
+            onTap: monthTxs.isEmpty ? () => showImportSheet(context) : () => setState(() { filter = 'Todas'; cat = 'Todas'; q = ''; }),
           ),
       ]),
     );

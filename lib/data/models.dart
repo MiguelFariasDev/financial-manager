@@ -9,22 +9,45 @@ class Tx {
   Tx({
     required this.id, required this.d, required this.cat, required this.icon,
     required this.amt, required this.m, required this.acc, required this.day,
-    required this.st, this.due, this.card, this.nov = true,
+    required this.st, required this.date, this.due, this.card, this.nov = true,
+    this.importId, this.extId, this.review = false,
   });
   final int id;
   final String d, cat, icon, m, acc, day, st; // st: paga | futura | pendente
   final double amt;
-  final String? due, card;
-  final bool nov;
+  final DateTime date;
+  final String? due, card, importId, extId;
+  final bool nov, review; // review = imported without a category
+
+  /// Months since January 2026 (november 2026 = 10).
+  int get monthIdx => (date.year - 2026) * 12 + date.month - 1;
+
+  Tx copyWith({String? cat, String? icon, bool? review}) => Tx(
+        id: id, d: d, cat: cat ?? this.cat, icon: icon ?? this.icon, amt: amt, m: m, acc: acc, day: day, st: st,
+        date: date, due: due, card: card, nov: nov, importId: importId, extId: extId, review: review ?? this.review,
+      );
 
   Map<String, dynamic> toJson() => {
         'id': id, 'd': d, 'cat': cat, 'icon': icon, 'amt': amt, 'm': m, 'acc': acc,
         'day': day, 'st': st, 'due': due, 'card': card, 'nov': nov,
+        'date': date.toIso8601String(), 'importId': importId, 'extId': extId, 'review': review,
       };
   factory Tx.fromJson(Map<String, dynamic> j) => Tx(
         id: j['id'], d: j['d'], cat: j['cat'], icon: j['icon'], amt: (j['amt'] as num).toDouble(),
         m: j['m'], acc: j['acc'], day: j['day'], st: j['st'], due: j['due'], card: j['card'], nov: j['nov'] ?? true,
+        date: DateTime.tryParse(j['date'] ?? '') ?? DateTime(2026, 11, 4),
+        importId: j['importId'], extId: j['extId'], review: j['review'] ?? false,
       );
+}
+
+class ImportBatch {
+  const ImportBatch({required this.id, required this.name, required this.count, required this.at});
+  final String id, name;
+  final int count;
+  final DateTime at;
+  Map<String, dynamic> toJson() => {'id': id, 'name': name, 'count': count, 'at': at.toIso8601String()};
+  factory ImportBatch.fromJson(Map<String, dynamic> j) =>
+      ImportBatch(id: j['id'], name: j['name'], count: j['count'], at: DateTime.parse(j['at']));
 }
 
 class CardItem {
